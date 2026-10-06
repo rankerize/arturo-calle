@@ -1,0 +1,1099 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Diagnóstico SEO · Arturo Calle</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@600;700;800&family=Montserrat:wght@800;900&family=Poppins:ital,wght@0,400;0,500;0,600;0,700;1,400&family=JetBrains+Mono:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --navy: #06101f;
+  --navy-card: #0b1a30;
+  --cream: #f5f7fb;
+  --cream-card: #ffffff;
+  --principal: #0f6e5c;
+  --principal-dark: #0a4f42;
+  --acento: #2dd4bf;
+  --acento-dark: #0d9488;
+  --toques: #10b981;
+  --amber: #f59e0b;
+  --cyan: #06b6d4;
+  --danger: #ef4444;
+  --border-dark: rgba(255,255,255,0.12);
+  --border-light: rgba(6,16,31,0.08);
+  --font-display: 'Baloo 2', cursive, sans-serif;
+  --font-body: 'Poppins', sans-serif;
+  --font-num: 'Montserrat', sans-serif;
+  --font-mono: 'JetBrains Mono', monospace;
+}
+* { box-sizing: border-box; }
+html, body { height: 100%; margin: 0; padding: 0; }
+body { background: var(--navy); font-family: var(--font-body); overflow: hidden; -webkit-font-smoothing: antialiased; }
+h1, h2, h3, h4 { font-family: var(--font-display); font-weight: 700; line-height: 1.15; margin: 0; text-wrap: balance; }
+p { margin: 0; }
+::selection { background: rgba(15,110,92,0.35); color: #fff; }
+
+.deck { position: relative; z-index: 1; width: 100vw; height: 100dvh; }
+.slide {
+  position: absolute; inset: 0; display: flex; flex-direction: column; justify-content: flex-start;
+  padding: clamp(52px,5.5vw,72px) clamp(20px,4.6vw,76px) clamp(58px,6vw,80px);
+  opacity: 0; visibility: hidden; transform: translateX(40px) scale(0.99);
+  transition: opacity .45s ease, transform .5s cubic-bezier(.22,.68,.32,1);
+  overflow-y: auto;
+}
+.slide.active { opacity: 1; visibility: visible; transform: translateX(0) scale(1); }
+.slide.prevslide { transform: translateX(-40px) scale(.99); }
+.slide-inner { max-width: 1220px; width: 100%; margin: 0 auto; }
+
+.slide.dark-theme { background: var(--navy); color: var(--cream); }
+.slide.dark-theme h1, .slide.dark-theme h2, .slide.dark-theme h3 { color: #fff; }
+.slide.dark-theme p, .slide.dark-theme li { color: rgba(245,247,251,0.82); }
+
+.slide.light-theme { background: var(--cream); color: var(--navy); }
+.slide.light-theme h1, .slide.light-theme h2, .slide.light-theme h3 { color: var(--navy); }
+.slide.light-theme p, .slide.light-theme li { color: rgba(6,16,31,0.84); }
+
+.reveal { opacity: 0; transform: translateY(16px); transition: opacity .5s ease, transform .5s ease; }
+.slide.active .reveal { opacity: 1; transform: translateY(0); }
+.slide.active .reveal:nth-child(1){transition-delay:.05s}
+.slide.active .reveal:nth-child(2){transition-delay:.12s}
+.slide.active .reveal:nth-child(3){transition-delay:.19s}
+.slide.active .reveal:nth-child(4){transition-delay:.26s}
+.slide.active .reveal:nth-child(5){transition-delay:.33s}
+.slide.active .reveal:nth-child(6){transition-delay:.40s}
+
+.eyebrow { display: inline-flex; align-items: center; gap: 10px; font-size: .74rem; font-weight: 700; letter-spacing: .13em; text-transform: uppercase; margin-bottom: 10px; flex-wrap: wrap; }
+.slide.dark-theme .eyebrow { color: var(--acento); }
+.slide.light-theme .eyebrow { color: var(--principal-dark); }
+
+.badge { display: inline-flex; align-items: center; gap: 6px; padding: 4px 10px; border-radius: 6px; font-size: .72rem; font-weight: 700; text-transform: uppercase; letter-spacing: .06em; }
+.badge-teal { background: rgba(15,110,92,.15); color: #2dd4bf; border: 1px solid rgba(15,110,92,.35); }
+.badge-green { background: rgba(16,185,129,.15); color: #10b981; border: 1px solid rgba(16,185,129,.3); }
+.badge-amber { background: rgba(245,158,11,.15); color: #f59e0b; border: 1px solid rgba(245,158,11,.3); }
+.badge-cyan { background: rgba(6,182,212,.15); color: #06b6d4; border: 1px solid rgba(6,182,212,.3); }
+.badge-danger { background: rgba(239,68,68,.15); color: #ef4444; border: 1px solid rgba(239,68,68,.3); }
+.badge-purple { background: rgba(168,85,247,.15); color: #a855f7; border: 1px solid rgba(168,85,247,.3); }
+.badge-chapter { font-weight: 800; }
+.slide.dark-theme .badge-chapter { background: rgba(255,255,255,.10); color: rgba(255,255,255,.9); border: 1px solid rgba(255,255,255,.22); }
+.slide.light-theme .badge-chapter { background: rgba(6,16,31,.07); color: var(--navy); border: 1px solid rgba(6,16,31,.16); }
+
+.section-title { font-size: clamp(1.5rem,2.9vw,2.5rem); max-width: 30ch; line-height: 1.16; margin-bottom: 12px; }
+
+.grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+.grid-3 { display: grid; grid-template-columns: repeat(3,1fr); gap: 12px; }
+.grid-4 { display: grid; grid-template-columns: repeat(4,1fr); gap: 10px; }
+
+.panel { border-radius: 14px; padding: 13px 16px; transition: transform .25s, box-shadow .25s; }
+.slide.dark-theme .panel { background: var(--navy-card); border: 1px solid var(--border-dark); }
+.slide.light-theme .panel { background: var(--cream-card); border: 1px solid var(--border-light); box-shadow: 0 4px 18px rgba(6,16,31,.04); }
+
+.panel-title { display: flex; align-items: center; gap: 8px; font-size: .76rem; font-weight: 700; text-transform: uppercase; letter-spacing: .06em; margin-bottom: 7px; }
+.slide.dark-theme .panel-title { color: #fff; }
+.slide.light-theme .panel-title { color: var(--navy); }
+.panel p, .panel li { font-size: .81rem; line-height: 1.46; }
+
+.stat-hero { font-family: var(--font-num); font-weight: 900; line-height: 1; font-variant-numeric: tabular-nums; }
+.slide.dark-theme .stat-hero { color: #fff; }
+.slide.light-theme .stat-hero { color: var(--navy); }
+.num-highlight { font-family: var(--font-num); font-weight: 900; }
+.slide.dark-theme .num-highlight { color: #fff; }
+.slide.light-theme .num-highlight { color: var(--principal-dark); }
+
+.code-box { font-family: var(--font-mono); font-size: .74rem; background: #020a10; border: 1px solid rgba(255,255,255,.1); border-radius: 10px; padding: 10px 12px; color: #7dd3c0; overflow-x: auto; line-height: 1.5; }
+
+.footer-bar { position: fixed; bottom: 0; left: 0; right: 0; z-index: 100; height: 48px; display: flex; align-items: center; justify-content: space-between; padding: 0 clamp(16px,4vw,40px); background: rgba(6,16,31,.96); backdrop-filter: blur(10px); border-top: 1px solid rgba(255,255,255,.08); }
+.brand-mark { font-size: .72rem; font-weight: 700; color: rgba(255,255,255,.6); display: flex; align-items: center; gap: 8px; }
+.brand-mark strong { color: #fff; }
+.nav-controls { display: flex; align-items: center; gap: 12px; }
+.nav-btn { background: rgba(255,255,255,.08); border: 1px solid rgba(255,255,255,.12); color: #fff; padding: 5px 12px; border-radius: 8px; font-size: .72rem; font-weight: 600; cursor: pointer; display: flex; align-items: center; gap: 6px; transition: all .2s; }
+.nav-btn:hover { background: var(--principal); border-color: var(--principal); }
+.progress-track { position: fixed; top: 0; left: 0; right: 0; height: 3px; background: rgba(255,255,255,.08); z-index: 101; }
+.progress-fill { height: 100%; width: 0%; background: linear-gradient(90deg, var(--principal), var(--acento)); transition: width .3s ease; }
+.dots-container { display: flex; align-items: center; gap: 4px; flex-wrap: wrap; max-width: 40vw; }
+.dot-btn { width: 6px; height: 6px; border-radius: 50%; background: rgba(255,255,255,.25); border: none; cursor: pointer; padding: 0; transition: all .2s; flex: none; }
+.dot-btn.active { width: 18px; border-radius: 4px; background: var(--principal); }
+
+.matrix-table { width: 100%; border-collapse: collapse; font-size: .78rem; }
+.matrix-table th { padding: 7px 9px; font-family: var(--font-display); font-weight: 700; text-transform: uppercase; letter-spacing: .05em; font-size: .66rem; border-bottom: 2px solid var(--principal); text-align: left; }
+.matrix-table td { padding: 7px 9px; border-bottom: 1px solid rgba(6,16,31,.08); vertical-align: top; }
+.slide.dark-theme .matrix-table td { border-bottom: 1px solid rgba(255,255,255,.08); }
+.slide.dark-theme .matrix-table th { color: #fff; }
+.slide.light-theme .matrix-table th { color: var(--navy); }
+
+.icon-svg { width: 15px; height: 15px; vertical-align: middle; flex: none; }
+.chart-box { border-radius: 10px; }
+.chart-caption { font-size: .7rem; margin-top: 4px; }
+.slide.light-theme .chart-caption { color: rgba(6,16,31,0.55); }
+.slide.dark-theme .chart-caption { color: rgba(245,247,251,0.55); }
+
+.phase-tag { display:inline-flex; align-items:center; justify-content:center; font-family:var(--font-num); font-weight:900; font-size:.7rem; border-radius:6px; padding:2px 8px; }
+
+.check-item { display:flex; align-items:flex-start; gap:9px; margin-bottom:5px; }
+.check-item span { font-size:.75rem; line-height:1.4; }
+
+@media (max-width: 760px) {
+  .grid-2, .grid-3, .grid-4 { grid-template-columns: 1fr; }
+  .section-title { font-size: 1.4rem; }
+  .dots-container { display: none; }
+}
+</style>
+</head>
+<body>
+
+<div class="progress-track"><div class="progress-fill" id="progressLine"></div></div>
+
+<div class="deck">
+
+<!-- SLIDE 1: PORTADA -->
+<section class="slide dark-theme">
+  <div class="slide-inner" style="text-align:center; display:flex; flex-direction:column; align-items:center; justify-content:center; min-height:80vh;">
+    <div class="eyebrow reveal" style="justify-content:center;">
+      <span class="badge badge-teal">Diagn&oacute;stico SEO Integral</span>
+      <span>grovi studio</span>
+    </div>
+    <h1 class="reveal" style="font-size:clamp(2.2rem,5vw,3.8rem); max-width:22ch; margin:0 auto 16px;">Diagn&oacute;stico SEO y Hoja de Ruta<br>Arturo Calle</h1>
+    <p class="reveal" style="font-size:1.02rem; max-width:58ch; margin:0 auto 24px; color:rgba(245,247,251,.85);">
+      Moda masculina y femenina &middot; arturocalle.com &mdash; diagn&oacute;stico integral de tr&aacute;fico org&aacute;nico, arquitectura VTEX, benchmarking competidores, preparaci&oacute;n para agentes de IA y hoja de ruta de 12 semanas.
+    </p>
+    <div class="reveal" style="display:flex; justify-content:center; gap:10px; flex-wrap:wrap;">
+      <span class="badge badge-cyan" style="padding:8px 14px; font-size:.78rem;">Google Search Console (90 d&iacute;as)</span>
+      <span class="badge badge-green" style="padding:8px 14px; font-size:.78rem;">Semrush · 10 a&ntilde;os de tendencia</span>
+      <span class="badge badge-amber" style="padding:8px 14px; font-size:.78rem;">isitagentready.com</span>
+      <span class="badge badge-purple" style="padding:8px 14px; font-size:.78rem;">VTEX eCommerce</span>
+      <span class="badge badge-teal" style="padding:8px 14px; font-size:.78rem;">5 competidores</span>
+    </div>
+    <p class="reveal" style="margin-top:26px; font-size:.76rem; color:rgba(245,247,251,.5); font-family:var(--font-mono);">Preparado por Grovi Studio &middot; 6 oct 2026</p>
+  </div>
+</section>
+
+
+<!-- SLIDE 2: ÍNDICE -->
+<section class="slide light-theme">
+  <div class="slide-inner">
+    <div class="eyebrow reveal"><span class="badge badge-teal">Mapa del diagn&oacute;stico</span><span>9 cap&iacute;tulos · del mercado a la hoja de ruta</span></div>
+    <h2 class="section-title reveal">Qu&eacute; vas a encontrar en este documento</h2>
+    <div class="grid-4 reveal" style="margin-top:6px;">
+      <div class="panel"><div class="panel-title" style="color:var(--principal-dark);">01 · Resumen ejecutivo</div><p>Los 3 dolores cr&iacute;ticos y las 3 oportunidades con mayor impacto inmediato.</p></div>
+      <div class="panel"><div class="panel-title" style="color:var(--principal-dark);">02 · Benchmarking</div><p>Arturo Calle vs Koaj, Vélez, Chevignon, SevenSeven &mdash; quién gana en Google.</p></div>
+      <div class="panel"><div class="panel-title" style="color:var(--principal-dark);">03 · Tr&aacute;fico GSC</div><p>Ca&iacute;da del 42% desde el pico, an&aacute;lisis de 1.120 keywords con oportunidad.</p></div>
+      <div class="panel"><div class="panel-title" style="color:var(--principal-dark);">04 · Arquitectura</div><p>Taxonom&iacute;a VTEX, 3.622 URLs en 6 sitemaps y anomal&iacute;as cr&iacute;ticas.</p></div>
+    </div>
+    <div class="grid-4 reveal" style="margin-top:10px;">
+      <div class="panel"><div class="panel-title" style="color:var(--principal-dark);">05 · Rendimiento t&eacute;cnico</div><p>Auditor&iacute;a de im&aacute;genes, c&oacute;digos HTTP, redirecciones y velocidad.</p></div>
+      <div class="panel"><div class="panel-title" style="color:var(--principal-dark);">06 · Comercial</div><p>Keywords sin p&aacute;gina de destino, CTR cr&iacute;tico y robots.txt.</p></div>
+      <div class="panel"><div class="panel-title" style="color:var(--principal-dark);">07 · T&eacute;cnico, IA y CMS</div><p>AI-Readiness Level 1/5 &mdash; qu&eacute; significa y c&oacute;mo subirlo.</p></div>
+      <div class="panel"><div class="panel-title" style="color:var(--principal-dark);">08 · S&iacute;ntesis ejecutiva</div><p>3 dolores con n&uacute;meros y 3 oportunidades con proyecci&oacute;n de clics.</p></div>
+    </div>
+    <div class="grid-4 reveal" style="margin-top:10px;">
+      <div class="panel"><div class="panel-title" style="color:var(--principal-dark);">09 · Priorizaci&oacute;n y ruta</div><p>18 acciones P1/P2/P3 con esfuerzo, impacto y hoja de ruta de 12 semanas.</p></div>
+    </div>
+  </div>
+</section>
+
+
+<!-- SLIDE 3: COVER CAP. 1 -->
+<section class="slide dark-theme">
+  <div class="slide-inner" style="text-align:center; display:flex; flex-direction:column; align-items:center; justify-content:center; min-height:80vh;">
+    <div class="eyebrow reveal" style="justify-content:center;"><span class="badge badge-chapter" style="font-size:.82rem; padding:7px 18px;">Cap&iacute;tulo 1 de 9</span></div>
+    <h1 class="reveal" style="font-size:clamp(2.3rem,5vw,3.8rem); margin:16px auto 14px; max-width:20ch;">Resumen Ejecutivo</h1>
+    <p class="reveal" style="font-size:1.02rem; max-width:56ch; margin:0 auto; color:rgba(245,247,251,.8);">Los hallazgos m&aacute;s cr&iacute;ticos del diagn&oacute;stico en un solo vistazo: qu&eacute; duele, qu&eacute; hay para ganar.</p>
+  </div>
+</section>
+
+
+<!-- SLIDE 4: HALLAZGOS CLAVE -->
+<section class="slide light-theme">
+  <div class="slide-inner">
+    <div class="eyebrow reveal"><span class="badge badge-chapter">Cap. 01 &middot; Resumen Ejecutivo</span><span class="badge badge-danger">3 dolores</span><span class="badge badge-green">3 oportunidades</span></div>
+    <h2 class="section-title reveal">El diagn&oacute;stico en 6 n&uacute;meros</h2>
+    <div class="grid-3 reveal">
+      <div class="panel" style="border-left: 3px solid var(--danger);">
+        <div class="panel-title" style="color:var(--danger);">
+          <svg viewBox="0 0 16 16" class="icon-svg" fill="none"><circle cx="8" cy="8" r="7" fill="rgba(239,68,68,.2)"/><path d="M8 5v4M8 11v.5" stroke="#ef4444" stroke-width="1.5" stroke-linecap="round"/></svg>
+          Dolor 1 · Ca&iacute;da de tr&aacute;fico
+        </div>
+        <div class="stat-hero" style="font-size:2.4rem; color:var(--danger);">−42%</div>
+        <p style="margin-top:6px;">De <strong>419.052</strong> visitas/mes (sep 2025) a <strong>203.780</strong> (sep 2026). Arturo Calle perdi&oacute; casi la mitad de su tr&aacute;fico org&aacute;nico en un a&ntilde;o.</p>
+      </div>
+      <div class="panel" style="border-left: 3px solid var(--amber);">
+        <div class="panel-title" style="color:var(--amber);">
+          <svg viewBox="0 0 16 16" class="icon-svg" fill="none"><circle cx="8" cy="8" r="7" fill="rgba(245,158,11,.2)"/><path d="M8 5v4M8 11v.5" stroke="#f59e0b" stroke-width="1.5" stroke-linecap="round"/></svg>
+          Dolor 2 · PDPs inv&iacute;sibles
+        </div>
+        <div class="stat-hero" style="font-size:2.4rem; color:var(--amber);">67.6%</div>
+        <p style="margin-top:6px;">1.182 de 1.748 p&aacute;ginas de producto tienen <strong>cero clics</strong>. El cat&aacute;logo no est&aacute; trabajando para el negocio.</p>
+      </div>
+      <div class="panel" style="border-left: 3px solid var(--cyan);">
+        <div class="panel-title" style="color:var(--cyan);">
+          <svg viewBox="0 0 16 16" class="icon-svg" fill="none"><circle cx="8" cy="8" r="7" fill="rgba(6,182,212,.2)"/><path d="M8 5v4M8 11v.5" stroke="#06b6d4" stroke-width="1.5" stroke-linecap="round"/></svg>
+          Dolor 3 · Marca en crisis
+        </div>
+        <div class="stat-hero" style="font-size:2.4rem; color:var(--cyan);">−83%</div>
+        <p style="margin-top:6px;">&ldquo;arturo calle trajes hombre&rdquo; cay&oacute; un 83% en un trimestre. Una keyword de compra directa que estaba funcionando y se perdi&oacute;.</p>
+      </div>
+    </div>
+    <div class="grid-3 reveal" style="margin-top:12px;">
+      <div class="panel" style="border-left: 3px solid var(--toques);">
+        <div class="panel-title" style="color:var(--toques);">
+          <svg viewBox="0 0 16 16" class="icon-svg" fill="none"><circle cx="8" cy="8" r="7" fill="rgba(16,185,129,.2)"/><path d="M4.5 8.5l2.5 2.5 4.5-5" stroke="#10b981" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          Oportunidad 1 · Striking distance
+        </div>
+        <div class="stat-hero" style="font-size:2.4rem; color:var(--toques);">1.120</div>
+        <p style="margin-top:6px;">Keywords entre posici&oacute;n 4 y 20 esperando subir. Potencial de <strong>+18.000 clics/mes</strong> con optimizaci&oacute;n de contenido.</p>
+      </div>
+      <div class="panel" style="border-left: 3px solid var(--toques);">
+        <div class="panel-title" style="color:var(--toques);">
+          <svg viewBox="0 0 16 16" class="icon-svg" fill="none"><circle cx="8" cy="8" r="7" fill="rgba(16,185,129,.2)"/><path d="M4.5 8.5l2.5 2.5 4.5-5" stroke="#10b981" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          Oportunidad 2 · Credimarcas
+        </div>
+        <div class="stat-hero" style="font-size:2.4rem; color:var(--toques);">51K imp</div>
+        <p style="margin-top:6px;">La keyword &ldquo;credimarcas&rdquo; tiene 51.531 impresiones en posici&oacute;n 4.8 pero solo 30 clics. Optimizar el snippet puede traer +2.500 clics/mes.</p>
+      </div>
+      <div class="panel" style="border-left: 3px solid var(--toques);">
+        <div class="panel-title" style="color:var(--toques);">
+          <svg viewBox="0 0 16 16" class="icon-svg" fill="none"><circle cx="8" cy="8" r="7" fill="rgba(16,185,129,.2)"/><path d="M4.5 8.5l2.5 2.5 4.5-5" stroke="#10b981" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          Oportunidad 3 · Categor&iacute;as gen&eacute;ricas
+        </div>
+        <div class="stat-hero" style="font-size:2.4rem; color:var(--toques);">21M imp</div>
+        <p style="margin-top:6px;">Camisa, camiseta, blazer, polo &mdash; millones de impresiones, posiciones 8–11. Mejorar estas p&aacute;ginas puede doblar el tr&aacute;fico org&aacute;nico.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<!-- SLIDE 5: COVER CAP. 2 -->
+<section class="slide dark-theme">
+  <div class="slide-inner" style="text-align:center; display:flex; flex-direction:column; align-items:center; justify-content:center; min-height:80vh;">
+    <div class="eyebrow reveal" style="justify-content:center;"><span class="badge badge-chapter" style="font-size:.82rem; padding:7px 18px;">Cap&iacute;tulo 2 de 9</span></div>
+    <h1 class="reveal" style="font-size:clamp(2.3rem,5vw,3.8rem); margin:16px auto 14px; max-width:20ch;">Benchmarking</h1>
+    <p class="reveal" style="font-size:1.02rem; max-width:56ch; margin:0 auto; color:rgba(245,247,251,.8);">C&oacute;mo est&aacute; Arturo Calle vs sus competidores directos en Google Colombia.</p>
+  </div>
+</section>
+
+
+<!-- SLIDE 6: TABLA COMPETIDORES -->
+<section class="slide light-theme">
+  <div class="slide-inner">
+    <div class="eyebrow reveal"><span class="badge badge-chapter">Cap. 02 &middot; Benchmarking</span><span class="badge badge-cyan">Semrush Colombia</span><span>Octubre 2026</span></div>
+    <h2 class="section-title reveal">Arturo Calle est&aacute; por encima de Chevignon pero muy por debajo de Vélez y Koaj</h2>
+    <div class="reveal" style="margin-top:8px;">
+      <table class="matrix-table">
+        <thead>
+          <tr>
+            <th>Marca</th>
+            <th>Tr&aacute;fico org. estimado</th>
+            <th>Keywords totales</th>
+            <th>vs Arturo Calle</th>
+            <th>Posici&oacute;n relativa</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr style="background:rgba(45,212,191,.06);">
+            <td><strong>Arturo Calle</strong><br><span style="font-size:.7rem; opacity:.6;">arturocalle.com</span></td>
+            <td><span class="num-highlight" style="font-size:1.05rem;">245.407</span></td>
+            <td>32.038</td>
+            <td><span class="badge badge-teal">Referencia</span></td>
+            <td>
+              <div style="height:10px; background:rgba(45,212,191,.15); border-radius:5px; overflow:hidden;">
+                <div style="height:100%; width:38%; background:var(--acento); border-radius:5px;"></div>
+              </div>
+            </td>
+          </tr>
+          <tr>
+            <td><strong>Vélez</strong><br><span style="font-size:.7rem; opacity:.6;">velez.com.co</span></td>
+            <td><span class="num-highlight" style="font-size:1.05rem; color:var(--danger);">639.262</span></td>
+            <td>47.716</td>
+            <td><span class="badge badge-danger">+161%</span></td>
+            <td>
+              <div style="height:10px; background:rgba(239,68,68,.1); border-radius:5px; overflow:hidden;">
+                <div style="height:100%; width:100%; background:var(--danger); border-radius:5px;"></div>
+              </div>
+            </td>
+          </tr>
+          <tr>
+            <td><strong>Koaj</strong><br><span style="font-size:.7rem; opacity:.6;">koaj.co</span></td>
+            <td><span class="num-highlight" style="font-size:1.05rem; color:var(--amber);">439.043</span></td>
+            <td>26.912</td>
+            <td><span class="badge badge-amber">+79%</span></td>
+            <td>
+              <div style="height:10px; background:rgba(245,158,11,.1); border-radius:5px; overflow:hidden;">
+                <div style="height:100%; width:69%; background:var(--amber); border-radius:5px;"></div>
+              </div>
+            </td>
+          </tr>
+          <tr>
+            <td><strong>SevenSeven</strong><br><span style="font-size:.7rem; opacity:.6;">sevenseven.com</span></td>
+            <td><span class="num-highlight" style="font-size:1.05rem;">259.889</span></td>
+            <td>13.987</td>
+            <td><span class="badge badge-amber">+6%</span></td>
+            <td>
+              <div style="height:10px; background:rgba(245,158,11,.1); border-radius:5px; overflow:hidden;">
+                <div style="height:100%; width:41%; background:#a78bfa; border-radius:5px;"></div>
+              </div>
+            </td>
+          </tr>
+          <tr>
+            <td><strong>Tennis</strong><br><span style="font-size:.7rem; opacity:.6;">tennis.com.co</span></td>
+            <td><span class="num-highlight" style="font-size:1.05rem; color:var(--toques);">173.294</span></td>
+            <td>18.056</td>
+            <td><span class="badge badge-green">−29%</span></td>
+            <td>
+              <div style="height:10px; background:rgba(16,185,129,.1); border-radius:5px; overflow:hidden;">
+                <div style="height:100%; width:27%; background:var(--toques); border-radius:5px;"></div>
+              </div>
+            </td>
+          </tr>
+          <tr>
+            <td><strong>Chevignon</strong><br><span style="font-size:.7rem; opacity:.6;">chevignon.com.co</span></td>
+            <td><span class="num-highlight" style="font-size:1.05rem; color:var(--toques);">140.131</span></td>
+            <td>19.247</td>
+            <td><span class="badge badge-green">−43%</span></td>
+            <td>
+              <div style="height:10px; background:rgba(16,185,129,.1); border-radius:5px; overflow:hidden;">
+                <div style="height:100%; width:22%; background:var(--toques); border-radius:5px;"></div>
+              </div>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="reveal" style="margin-top:10px; padding:9px 14px; background:rgba(245,158,11,.08); border:1px solid rgba(245,158,11,.25); border-radius:10px;">
+      <p style="font-size:.78rem;"><strong style="color:var(--amber);">Contexto de mercado:</strong> Todos los competidores cayeron desde sus picos de 2025. El mercado de moda en Colombia perd&iacute;a visibilidad org&aacute;nica de forma general &mdash; el problema de Arturo Calle es que cay&oacute; m&aacute;s y m&aacute;s r&aacute;pido que sus pares.</p>
+    </div>
+  </div>
+</section>
+
+
+<!-- SLIDE 7: TOP KEYWORDS COMPETENCIA -->
+<section class="slide dark-theme">
+  <div class="slide-inner">
+    <div class="eyebrow reveal"><span class="badge badge-chapter">Cap. 02 &middot; Benchmarking</span><span class="badge badge-amber">Share of Voice</span><span>Keywords estrat&eacute;gicas compartidas</span></div>
+    <h2 class="section-title reveal" style="color:#fff;">D&oacute;nde Arturo Calle lidera y d&oacute;nde pierde frente a la competencia</h2>
+    <div class="grid-2 reveal" style="margin-top:8px;">
+      <div>
+        <div style="font-size:.72rem; font-weight:700; text-transform:uppercase; letter-spacing:.08em; color:var(--acento); margin-bottom:8px;">Lidera Arturo Calle (posici&oacute;n 1)</div>
+        <div style="display:flex; flex-direction:column; gap:7px;">
+          <div style="display:flex; justify-content:space-between; align-items:center; background:var(--navy-card); border:1px solid var(--border-dark); border-radius:8px; padding:8px 12px;">
+            <span style="font-size:.8rem;">corbata</span>
+            <div style="display:flex; align-items:center; gap:8px;"><span style="font-family:var(--font-num); font-weight:900; color:var(--acento);">#1</span><span style="font-size:.7rem; opacity:.6;">5.400 b&uacute;sq/mes · 2.538 tr&aacute;f.</span></div>
+          </div>
+          <div style="display:flex; justify-content:space-between; align-items:center; background:var(--navy-card); border:1px solid var(--border-dark); border-radius:8px; padding:8px 12px;">
+            <span style="font-size:.8rem;">smoking</span>
+            <div style="display:flex; align-items:center; gap:8px;"><span style="font-family:var(--font-num); font-weight:900; color:var(--acento);">#1</span><span style="font-size:.7rem; opacity:.6;">14.800 b&uacute;sq/mes · 1.332 tr&aacute;f.</span></div>
+          </div>
+          <div style="display:flex; justify-content:space-between; align-items:center; background:var(--navy-card); border:1px solid var(--border-dark); border-radius:8px; padding:8px 12px;">
+            <span style="font-size:.8rem;">blazer hombre</span>
+            <div style="display:flex; align-items:center; gap:8px;"><span style="font-family:var(--font-num); font-weight:900; color:var(--acento);">#1</span><span style="font-size:.7rem; opacity:.6;">9.900 b&uacute;sq/mes · 1.287 tr&aacute;f.</span></div>
+          </div>
+          <div style="display:flex; justify-content:space-between; align-items:center; background:var(--navy-card); border:1px solid var(--border-dark); border-radius:8px; padding:8px 12px;">
+            <span style="font-size:.8rem;">arturo calle camisas</span>
+            <div style="display:flex; align-items:center; gap:8px;"><span style="font-family:var(--font-num); font-weight:900; color:var(--acento);">#1</span><span style="font-size:.7rem; opacity:.6;">2.400 b&uacute;sq/mes · 1.920 tr&aacute;f.</span></div>
+          </div>
+        </div>
+      </div>
+      <div>
+        <div style="font-size:.72rem; font-weight:700; text-transform:uppercase; letter-spacing:.08em; color:var(--amber); margin-bottom:8px;">Oportunidades de mejora (pos 4–12)</div>
+        <div style="display:flex; flex-direction:column; gap:7px;">
+          <div style="display:flex; justify-content:space-between; align-items:center; background:var(--navy-card); border:1px solid var(--border-dark); border-radius:8px; padding:8px 12px;">
+            <span style="font-size:.8rem;">blazer</span>
+            <div style="display:flex; align-items:center; gap:8px;"><span style="font-family:var(--font-num); font-weight:900; color:var(--amber);">#2</span><span style="font-size:.7rem; opacity:.6;">22.200 b&uacute;sq/mes · gap con Koaj</span></div>
+          </div>
+          <div style="display:flex; justify-content:space-between; align-items:center; background:var(--navy-card); border:1px solid var(--border-dark); border-radius:8px; padding:8px 12px;">
+            <span style="font-size:.8rem;">camisa</span>
+            <div style="display:flex; align-items:center; gap:8px;"><span style="font-family:var(--font-num); font-weight:900; color:var(--amber);">#8.8</span><span style="font-size:.7rem; opacity:.6;">21.398 imp GSC · s&oacute;lo 27 clics</span></div>
+          </div>
+          <div style="display:flex; justify-content:space-between; align-items:center; background:var(--navy-card); border:1px solid var(--border-dark); border-radius:8px; padding:8px 12px;">
+            <span style="font-size:.8rem;">maletas de viaje</span>
+            <div style="display:flex; align-items:center; gap:8px;"><span style="font-family:var(--font-num); font-weight:900; color:var(--amber);">#8.3</span><span style="font-size:.7rem; opacity:.6;">29.139 imp · 663 clics</span></div>
+          </div>
+          <div style="display:flex; justify-content:space-between; align-items:center; background:var(--navy-card); border:1px solid var(--border-dark); border-radius:8px; padding:8px 12px;">
+            <span style="font-size:.8rem;">regalos para hombres</span>
+            <div style="display:flex; align-items:center; gap:8px;"><span style="font-family:var(--font-num); font-weight:900; color:var(--amber);">#5.0</span><span style="font-size:.7rem; opacity:.6;">10.406 imp · +160% vs trimestre ant.</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="reveal" style="margin-top:10px; padding:9px 14px; background:rgba(6,182,212,.06); border:1px solid rgba(6,182,212,.2); border-radius:10px;">
+      <p style="font-size:.78rem;"><strong style="color:var(--cyan);">Nota:</strong> La keyword &ldquo;addi&rdquo; (fintech BNPL, 301.000 b&uacute;sq/mes) aparece en posici&oacute;n 4 para arturocalle.com porque existe una landing promo. Ese tr&aacute;fico est&aacute; inflado artificialmente y no representa intenci&oacute;n de compra de moda.</p>
+    </div>
+  </div>
+</section>
+
+
+<!-- SLIDE 8: COVER CAP. 3 -->
+<section class="slide dark-theme">
+  <div class="slide-inner" style="text-align:center; display:flex; flex-direction:column; align-items:center; justify-content:center; min-height:80vh;">
+    <div class="eyebrow reveal" style="justify-content:center;"><span class="badge badge-chapter" style="font-size:.82rem; padding:7px 18px;">Cap&iacute;tulo 3 de 9</span></div>
+    <h1 class="reveal" style="font-size:clamp(2.3rem,5vw,3.8rem); margin:16px auto 14px; max-width:20ch;">Tr&aacute;fico Org&aacute;nico</h1>
+    <p class="reveal" style="font-size:1.02rem; max-width:56ch; margin:0 auto; color:rgba(245,247,251,.8);">Google Search Console + Semrush: c&oacute;mo lleg&oacute; Arturo Calle al pico y por qu&eacute; cay&oacute;.</p>
+  </div>
+</section>
+
+
+<!-- SLIDE 9: MÉTRICAS GSC -->
+<section class="slide light-theme">
+  <div class="slide-inner">
+    <div class="eyebrow reveal"><span class="badge badge-chapter">Cap. 03 &middot; Tr&aacute;fico</span><span class="badge badge-cyan">Google Search Console</span><span>&Uacute;ltimos 90 d&iacute;as · oct 2026</span></div>
+    <h2 class="section-title reveal">En 90 d&iacute;as: 86.980 clics, 2.28 millones de impresiones</h2>
+    <div class="grid-4 reveal" style="margin-top:8px;">
+      <div class="panel" style="text-align:center; padding:18px 12px;">
+        <div class="stat-hero" style="font-size:2.6rem; color:var(--principal);">86.980</div>
+        <p style="font-size:.72rem; margin-top:6px; font-weight:600; text-transform:uppercase; letter-spacing:.06em;">Clics totales</p>
+        <p style="font-size:.7rem; opacity:.6;">Jul–Oct 2026</p>
+      </div>
+      <div class="panel" style="text-align:center; padding:18px 12px;">
+        <div class="stat-hero" style="font-size:2.6rem; color:var(--cyan);">2.29M</div>
+        <p style="font-size:.72rem; margin-top:6px; font-weight:600; text-transform:uppercase; letter-spacing:.06em;">Impresiones</p>
+        <p style="font-size:.7rem; opacity:.6;">Alcance potencial</p>
+      </div>
+      <div class="panel" style="text-align:center; padding:18px 12px;">
+        <div class="stat-hero" style="font-size:2.6rem; color:var(--amber);">3.80%</div>
+        <p style="font-size:.72rem; margin-top:6px; font-weight:600; text-transform:uppercase; letter-spacing:.06em;">CTR promedio</p>
+        <p style="font-size:.7rem; opacity:.6;">De cada 100 que ven, 3.8 dan clic</p>
+      </div>
+      <div class="panel" style="text-align:center; padding:18px 12px;">
+        <div class="stat-hero" style="font-size:2.6rem; color:var(--navy);">6.5</div>
+        <p style="font-size:.72rem; margin-top:6px; font-weight:600; text-transform:uppercase; letter-spacing:.06em;">Posici&oacute;n promedio</p>
+        <p style="font-size:.7rem; opacity:.6;">P&aacute;gina 1 de Google</p>
+      </div>
+    </div>
+    <div class="grid-3 reveal" style="margin-top:12px;">
+      <div class="panel">
+        <div class="panel-title">Distribuci&oacute;n de keywords</div>
+        <div style="display:flex; flex-direction:column; gap:6px; margin-top:6px;">
+          <div style="display:flex; justify-content:space-between; align-items:center;">
+            <span style="font-size:.75rem;">Posiciones 1–3</span>
+            <div style="display:flex; align-items:center; gap:8px;">
+              <div style="width:80px; height:6px; background:rgba(6,16,31,.08); border-radius:3px; overflow:hidden;"><div style="height:100%; width:32%; background:var(--toques); border-radius:3px;"></div></div>
+              <span style="font-family:var(--font-num); font-weight:700; font-size:.78rem; color:var(--toques);">3.246</span>
+            </div>
+          </div>
+          <div style="display:flex; justify-content:space-between; align-items:center;">
+            <span style="font-size:.75rem;">Posiciones 4–10</span>
+            <div style="display:flex; align-items:center; gap:8px;">
+              <div style="width:80px; height:6px; background:rgba(6,16,31,.08); border-radius:3px; overflow:hidden;"><div style="height:100%; width:46%; background:var(--acento); border-radius:3px;"></div></div>
+              <span style="font-family:var(--font-num); font-weight:700; font-size:.78rem; color:var(--acento-dark);">4.642</span>
+            </div>
+          </div>
+          <div style="display:flex; justify-content:space-between; align-items:center;">
+            <span style="font-size:.75rem;">Posiciones 11–20</span>
+            <div style="display:flex; align-items:center; gap:8px;">
+              <div style="width:80px; height:6px; background:rgba(6,16,31,.08); border-radius:3px; overflow:hidden;"><div style="height:100%; width:54%; background:var(--amber); border-radius:3px;"></div></div>
+              <span style="font-family:var(--font-num); font-weight:700; font-size:.78rem; color:var(--amber);">5.510</span>
+            </div>
+          </div>
+          <div style="display:flex; justify-content:space-between; align-items:center;">
+            <span style="font-size:.75rem;">Posiciones 21–50</span>
+            <div style="display:flex; align-items:center; gap:8px;">
+              <div style="width:80px; height:6px; background:rgba(6,16,31,.08); border-radius:3px; overflow:hidden;"><div style="height:100%; width:45%; background:rgba(239,68,68,.5); border-radius:3px;"></div></div>
+              <span style="font-family:var(--font-num); font-weight:700; font-size:.78rem; color:var(--danger);">4.557</span>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="panel">
+        <div class="panel-title">Keywords en striking distance</div>
+        <div style="margin-top:6px;">
+          <div style="font-family:var(--font-num); font-weight:900; font-size:2rem; color:var(--principal-dark);">1.120</div>
+          <p style="font-size:.75rem; margin-top:4px;">Keywords entre posici&oacute;n 4 y 20 con m&aacute;s de 200 impresiones. Cada una es un resultado que ya casi llega a la primera p&aacute;gina.</p>
+        </div>
+      </div>
+      <div class="panel">
+        <div class="panel-title">Valor del tr&aacute;fico (Semrush)</div>
+        <div style="margin-top:6px;">
+          <div style="font-family:var(--font-num); font-weight:900; font-size:2rem; color:var(--principal-dark);">$35.927</div>
+          <p style="font-size:.75rem; margin-top:4px;">USD/mes equivalente en publicidad pagada. Si el sitio no estuviera en Google, habr&iacute;a que pagar ese monto en Google Ads para obtener el mismo tr&aacute;fico.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<!-- SLIDE 10: TENDENCIA DE TRÁFICO -->
+<section class="slide dark-theme">
+  <div class="slide-inner">
+    <div class="eyebrow reveal"><span class="badge badge-chapter">Cap. 03 &middot; Tr&aacute;fico</span><span class="badge badge-danger">Ca&iacute;da cr&iacute;tica</span><span>Semrush Colombia &middot; Nov 2024 – Oct 2026</span></div>
+    <h2 class="section-title reveal" style="color:#fff;">El pico fue en septiembre 2025. En un a&ntilde;o, Arturo Calle perdi&oacute; 173.000 visitas org&aacute;nicas al mes</h2>
+    <div class="reveal" style="margin-top:8px;">
+      <svg id="trafficChart" viewBox="0 0 820 220" style="width:100%; height:auto; display:block;" preserveAspectRatio="xMidYMid meet"></svg>
+      <p class="chart-caption">Tr&aacute;fico org&aacute;nico estimado (Semrush, base Colombia). La l&iacute;nea vertical roja marca septiembre 2026: ca&iacute;da de 321.538 a 203.780 en un mes.</p>
+    </div>
+    <div class="grid-3 reveal" style="margin-top:10px;">
+      <div class="panel" style="text-align:center;">
+        <div style="font-size:.68rem; text-transform:uppercase; letter-spacing:.08em; opacity:.7; margin-bottom:4px;">Pico m&aacute;ximo</div>
+        <div class="stat-hero" style="font-size:1.8rem; color:var(--acento);">419.052</div>
+        <div style="font-size:.72rem; opacity:.6; margin-top:3px;">Septiembre 2025</div>
+      </div>
+      <div class="panel" style="text-align:center;">
+        <div style="font-size:.68rem; text-transform:uppercase; letter-spacing:.08em; opacity:.7; margin-bottom:4px;">M&iacute;nimo reciente</div>
+        <div class="stat-hero" style="font-size:1.8rem; color:var(--danger);">203.780</div>
+        <div style="font-size:.72rem; opacity:.6; margin-top:3px;">Septiembre 2026 (−51%)</div>
+      </div>
+      <div class="panel" style="text-align:center;">
+        <div style="font-size:.68rem; text-transform:uppercase; letter-spacing:.08em; opacity:.7; margin-bottom:4px;">Recuperaci&oacute;n parcial</div>
+        <div class="stat-hero" style="font-size:1.8rem; color:var(--amber);">245.407</div>
+        <div style="font-size:.72rem; opacity:.6; margin-top:3px;">Octubre 2026 (+20%)</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<!-- SLIDE 11: OPORTUNIDADES STRIKING DISTANCE -->
+<section class="slide light-theme">
+  <div class="slide-inner">
+    <div class="eyebrow reveal"><span class="badge badge-chapter">Cap. 03 &middot; Tr&aacute;fico</span><span class="badge badge-green">Quick Wins</span><span>Top keywords pos 4–20 &middot; 90 d&iacute;as GSC</span></div>
+    <h2 class="section-title reveal">Estas keywords ya tienen visibilidad. Solo necesitan empuje para subir a la primera posici&oacute;n</h2>
+    <div class="reveal" style="margin-top:8px;">
+      <table class="matrix-table">
+        <thead>
+          <tr>
+            <th>Keyword</th>
+            <th>Impresiones</th>
+            <th>Clics actuales</th>
+            <th>CTR</th>
+            <th>Posici&oacute;n</th>
+            <th>Clics potenciales</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>credimarcas</strong> <span class="badge badge-amber" style="font-size:.62rem; padding:2px 6px;">p&aacute;g. legal</span></td>
+            <td>51.531</td><td>30</td><td style="color:var(--danger); font-weight:700;">0.06%</td><td>4.8</td>
+            <td><span class="num-highlight" style="color:var(--toques);">+2.547</span></td>
+          </tr>
+          <tr>
+            <td><strong>blazer</strong></td>
+            <td>35.734</td><td>324</td><td>0.91%</td><td>4.5</td>
+            <td><span class="num-highlight" style="color:var(--toques);">+1.463</span></td>
+          </tr>
+          <tr>
+            <td><strong>maletas de viaje</strong></td>
+            <td>29.139</td><td>663</td><td>2.28%</td><td>8.3</td>
+            <td><span class="num-highlight" style="color:var(--toques);">+794</span></td>
+          </tr>
+          <tr>
+            <td><strong>camisa</strong></td>
+            <td>21.398</td><td>27</td><td style="color:var(--danger); font-weight:700;">0.13%</td><td>8.8</td>
+            <td><span class="num-highlight" style="color:var(--toques);">+1.043</span></td>
+          </tr>
+          <tr>
+            <td><strong>smoking</strong></td>
+            <td>20.087</td><td>258</td><td>1.28%</td><td>3.5</td>
+            <td><span class="num-highlight" style="color:var(--toques);">+746</span></td>
+          </tr>
+          <tr>
+            <td><strong>camiseta</strong></td>
+            <td>16.829</td><td>22</td><td style="color:var(--danger); font-weight:700;">0.13%</td><td>9.8</td>
+            <td><span class="num-highlight" style="color:var(--toques);">+819</span></td>
+          </tr>
+          <tr>
+            <td><strong>mocasines</strong></td>
+            <td>18.749</td><td>176</td><td>0.94%</td><td>8.2</td>
+            <td><span class="num-highlight" style="color:var(--toques);">+761</span></td>
+          </tr>
+          <tr>
+            <td><strong>regalos para hombres</strong> <span class="badge badge-green" style="font-size:.62rem; padding:2px 6px;">+160% trimestral</span></td>
+            <td>10.406</td><td>117</td><td>1.12%</td><td>5.0</td>
+            <td><span class="num-highlight" style="color:var(--toques);">+403</span></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="reveal" style="margin-top:8px; padding:8px 14px; background:rgba(239,68,68,.06); border:1px solid rgba(239,68,68,.2); border-radius:10px;">
+      <p style="font-size:.76rem;"><strong style="color:var(--danger);">Alerta:</strong> "arturo calle trajes hombre" cay&oacute; −82.9% en el &uacute;ltimo trimestre (de 170 a 29 clics). Es una keyword de intenci&oacute;n de compra directa. Urge investigar si cambi&oacute; la URL destino.</p>
+    </div>
+  </div>
+</section>
+
+
+<!-- SLIDE 12: DISTRIBUCIÓN PDPs -->
+<section class="slide dark-theme">
+  <div class="slide-inner">
+    <div class="eyebrow reveal"><span class="badge badge-chapter">Cap. 03 &middot; Tr&aacute;fico</span><span class="badge badge-danger">P&aacute;ginas de producto</span><span>1.748 PDPs auditadas via GSC</span></div>
+    <h2 class="section-title reveal" style="color:#fff;">1.182 p&aacute;ginas de producto nunca han recibido un solo clic de Google</h2>
+    <div class="grid-2 reveal" style="margin-top:10px; gap:20px;">
+      <div>
+        <svg id="pdpChart" viewBox="0 0 400 200" style="width:100%; height:auto; display:block;"></svg>
+      </div>
+      <div style="display:flex; flex-direction:column; justify-content:center; gap:12px;">
+        <div class="panel">
+          <div style="display:flex; align-items:center; gap:12px;">
+            <div style="width:14px; height:14px; border-radius:3px; background:var(--danger); flex:none;"></div>
+            <div>
+              <div class="stat-hero" style="font-size:1.6rem; color:var(--danger);">1.182 PDPs</div>
+              <p style="font-size:.74rem;">0 clics en 90 d&iacute;as &mdash; el <strong>67.6%</strong> del cat&aacute;logo invisible</p>
+            </div>
+          </div>
+        </div>
+        <div class="panel">
+          <div style="display:flex; align-items:center; gap:12px;">
+            <div style="width:14px; height:14px; border-radius:3px; background:var(--amber); flex:none;"></div>
+            <div>
+              <div class="stat-hero" style="font-size:1.6rem; color:var(--amber);">548 PDPs</div>
+              <p style="font-size:.74rem;">1 a 10 clics &mdash; el <strong>31.3%</strong> con presencia m&iacute;nima</p>
+            </div>
+          </div>
+        </div>
+        <div class="panel">
+          <div style="display:flex; align-items:center; gap:12px;">
+            <div style="width:14px; height:14px; border-radius:3px; background:var(--toques); flex:none;"></div>
+            <div>
+              <div class="stat-hero" style="font-size:1.6rem; color:var(--toques);">17 PDPs</div>
+              <p style="font-size:.74rem;">M&aacute;s de 10 clics &mdash; solo el <strong>1%</strong> genera tr&aacute;fico real</p>
+            </div>
+          </div>
+        </div>
+        <div style="padding:8px 12px; background:rgba(245,158,11,.08); border:1px solid rgba(245,158,11,.2); border-radius:8px;">
+          <p style="font-size:.74rem; color:rgba(245,247,251,.8);">Solo <strong style="color:var(--amber);">1 PDP</strong> supera los 200 clics. El cat&aacute;logo completo de Arturo Calle est&aacute; pr&aacute;cticamente ausente en Google.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<!-- SLIDE 13: COVER CAP. 4 -->
+<section class="slide dark-theme">
+  <div class="slide-inner" style="text-align:center; display:flex; flex-direction:column; align-items:center; justify-content:center; min-height:80vh;">
+    <div class="eyebrow reveal" style="justify-content:center;"><span class="badge badge-chapter" style="font-size:.82rem; padding:7px 18px;">Cap&iacute;tulo 4 de 9</span></div>
+    <h1 class="reveal" style="font-size:clamp(2.3rem,5vw,3.8rem); margin:16px auto 14px; max-width:20ch;">Arquitectura del Sitio</h1>
+    <p class="reveal" style="font-size:1.02rem; max-width:56ch; margin:0 auto; color:rgba(245,247,251,.8);">C&oacute;mo est&aacute;n organizadas las URLs en VTEX, qu&eacute; tan bien construido est&aacute; el sitemap y qu&eacute; anomal&iacute;as hay que corregir.</p>
+  </div>
+</section>
+
+
+<!-- SLIDE 14: TAXONOMÍA URL -->
+<section class="slide light-theme">
+  <div class="slide-inner">
+    <div class="eyebrow reveal"><span class="badge badge-chapter">Cap. 04 &middot; Arquitectura</span><span class="badge badge-cyan">Taxonom&iacute;a VTEX</span><span>Organizaci&oacute;n de URLs</span></div>
+    <h2 class="section-title reveal">La estructura del sitio es s&oacute;lida para SEO, pero tiene patrones que confunden a Google</h2>
+    <div class="grid-3 reveal" style="margin-top:8px;">
+      <div class="panel">
+        <div class="panel-title">Departamentos (ra&iacute;z)</div>
+        <div style="display:flex; flex-direction:column; gap:4px; margin-top:6px;">
+          <code style="font-family:var(--font-mono); font-size:.72rem; background:rgba(6,16,31,.06); padding:3px 7px; border-radius:5px;">/hombre</code>
+          <code style="font-family:var(--font-mono); font-size:.72rem; background:rgba(6,16,31,.06); padding:3px 7px; border-radius:5px;">/mujer</code>
+          <code style="font-family:var(--font-mono); font-size:.72rem; background:rgba(6,16,31,.06); padding:3px 7px; border-radius:5px;">/ninos</code>
+          <code style="font-family:var(--font-mono); font-size:.72rem; background:rgba(6,16,31,.06); padding:3px 7px; border-radius:5px;">/colore</code>
+        </div>
+        <p style="font-size:.72rem; margin-top:8px; opacity:.7;">Estructura jer&aacute;rquica clara: VTEX genera /departamento/categor&iacute;a/subcategor&iacute;a.</p>
+      </div>
+      <div class="panel">
+        <div class="panel-title">Categor&iacute;as y PDPs</div>
+        <div style="display:flex; flex-direction:column; gap:4px; margin-top:6px;">
+          <code style="font-family:var(--font-mono); font-size:.72rem; background:rgba(6,16,31,.06); padding:3px 7px; border-radius:5px;">/hombre/ropa/camisas</code>
+          <code style="font-family:var(--font-mono); font-size:.72rem; background:rgba(6,16,31,.06); padding:3px 7px; border-radius:5px;">/hombre/ropa/blazers</code>
+          <code style="font-family:var(--font-mono); font-size:.72rem; background:rgba(6,16,31,.06); padding:3px 7px; border-radius:5px;">/smoking-para-...-37700-1/p</code>
+        </div>
+        <p style="font-size:.72rem; margin-top:8px; opacity:.7;">PDPs terminan en <code style="font-family:var(--font-mono);">/p</code> y llevan SKU en el slug &mdash; patr&oacute;n VTEX est&aacute;ndar.</p>
+      </div>
+      <div class="panel">
+        <div class="panel-title">Landings especiales <code style="font-family:var(--font-mono); font-size:.68rem;">/t/</code></div>
+        <div style="display:flex; flex-direction:column; gap:4px; margin-top:6px;">
+          <code style="font-family:var(--font-mono); font-size:.72rem; background:rgba(6,16,31,.06); padding:3px 7px; border-radius:5px;">/t/camisa-rayada-hombre</code>
+          <code style="font-family:var(--font-mono); font-size:.72rem; background:rgba(6,16,31,.06); padding:3px 7px; border-radius:5px;">/t/traje-para-hombre</code>
+        </div>
+        <p style="font-size:.72rem; margin-top:8px; opacity:.7;">Las landings <code style="font-family:var(--font-mono);">/t/</code> rankean bien. "camisas de rayas hombre" posici&oacute;n 1 con 2.400 b&uacute;sq/mes.</p>
+      </div>
+    </div>
+    <div class="grid-2 reveal" style="margin-top:10px;">
+      <div class="panel" style="border-left:3px solid var(--amber);">
+        <div class="panel-title" style="color:var(--amber);">Alerta: 3 URLs para &ldquo;ofertas&rdquo;</div>
+        <div style="display:flex; flex-direction:column; gap:3px; margin-top:5px;">
+          <code style="font-family:var(--font-mono); font-size:.7rem; background:rgba(245,158,11,.08); padding:3px 7px; border-radius:5px;">/ac-ofertas</code>
+          <code style="font-family:var(--font-mono); font-size:.7rem; background:rgba(245,158,11,.08); padding:3px 7px; border-radius:5px;">/AC-ofertas/Hombre</code>
+          <code style="font-family:var(--font-mono); font-size:.7rem; background:rgba(245,158,11,.08); padding:3px 7px; border-radius:5px;">/ofertas-arturo-calle</code>
+        </div>
+        <p style="font-size:.72rem; margin-top:6px;">Tres URLs diferentes compiten por las mismas b&uacute;squedas de &ldquo;ofertas&rdquo;. Google no sabe a cu&aacute;l darle la posici&oacute;n.</p>
+      </div>
+      <div class="panel" style="border-left:3px solid var(--danger);">
+        <div class="panel-title" style="color:var(--danger);">Alerta: URL interna indexada</div>
+        <code style="font-family:var(--font-mono); font-size:.7rem; display:block; background:rgba(239,68,68,.08); padding:6px 8px; border-radius:5px; word-break:break-all;">wia.arturocalle.com/AC_AccesoSAP/...</code>
+        <p style="font-size:.72rem; margin-top:6px;">El sistema interno de SAP aparece en Semrush como URL destino de &ldquo;arturo calle trabaja con nosotros&rdquo;. Un sistema de login interno est&aacute; indexado p&uacute;blicamente.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<!-- SLIDE 15: SITEMAP -->
+<section class="slide dark-theme">
+  <div class="slide-inner">
+    <div class="eyebrow reveal"><span class="badge badge-chapter">Cap. 04 &middot; Arquitectura</span><span class="badge badge-cyan">Sitemap</span><span>El mapa que le env&iacute;as a Google</span></div>
+    <h2 class="section-title reveal" style="color:#fff;">3.622 URLs en 6 sub-sitemaps, con duplicados y slugs rotos</h2>
+    <div class="grid-2 reveal" style="margin-top:8px; gap:18px;">
+      <div>
+        <div style="font-size:.72rem; font-weight:700; text-transform:uppercase; letter-spacing:.08em; color:var(--acento); margin-bottom:10px;">Estructura del sitemap &iacute;ndice</div>
+        <div style="display:flex; flex-direction:column; gap:6px;">
+          <div style="display:flex; justify-content:space-between; align-items:center; background:var(--navy-card); border:1px solid var(--border-dark); border-radius:8px; padding:8px 12px;">
+            <code style="font-size:.73rem; color:#7dd3c0;">sitemap-1.xml</code>
+            <span style="font-family:var(--font-num); font-weight:700; color:var(--acento);">1.500</span>
+          </div>
+          <div style="display:flex; justify-content:space-between; align-items:center; background:var(--navy-card); border:1px solid var(--border-dark); border-radius:8px; padding:8px 12px;">
+            <code style="font-size:.73rem; color:#7dd3c0;">product-1.xml</code>
+            <span style="font-family:var(--font-num); font-weight:700; color:var(--acento);">1.000</span>
+          </div>
+          <div style="display:flex; justify-content:space-between; align-items:center; background:rgba(239,68,68,.08); border:1px solid rgba(239,68,68,.25); border-radius:8px; padding:8px 12px;">
+            <div>
+              <code style="font-size:.73rem; color:#f87171;">product-2.xml</code>
+              <span class="badge badge-danger" style="margin-left:8px; font-size:.6rem;">~27 slugs rotos</span>
+            </div>
+            <span style="font-family:var(--font-num); font-weight:700; color:var(--danger);">~500</span>
+          </div>
+          <div style="display:flex; justify-content:space-between; align-items:center; background:var(--navy-card); border:1px solid var(--border-dark); border-radius:8px; padding:8px 12px;">
+            <code style="font-size:.73rem; color:#7dd3c0;">category.xml</code>
+            <span style="font-family:var(--font-num); font-weight:700; color:var(--acento);">~400</span>
+          </div>
+          <div style="display:flex; justify-content:space-between; align-items:center; background:var(--navy-card); border:1px solid var(--border-dark); border-radius:8px; padding:8px 12px;">
+            <code style="font-size:.73rem; color:#7dd3c0;">landing.xml + others</code>
+            <span style="font-family:var(--font-num); font-weight:700; color:var(--acento);">~222</span>
+          </div>
+          <div style="display:flex; justify-content:space-between; align-items:center; background:var(--navy-card); border:1px solid var(--border-dark); border-radius:8px; padding:8px 12px; margin-top:4px; border-top:2px solid rgba(45,212,191,.3);">
+            <span style="font-size:.75rem; font-weight:700; color:var(--acento);">TOTAL</span>
+            <span style="font-family:var(--font-num); font-weight:900; font-size:1.1rem; color:var(--acento);">3.622</span>
+          </div>
+        </div>
+      </div>
+      <div style="display:flex; flex-direction:column; gap:10px;">
+        <div class="panel" style="border-left:3px solid var(--amber);">
+          <div class="panel-title" style="color:var(--amber);">Problema 1 · Slugs rotos</div>
+          <p style="font-size:.76rem;">~27 PDPs en product-2.xml tienen URLs con caracteres mal codificados. Google los registra como errores de rastreo. Hay que regenerar esas entradas del sitemap.</p>
+        </div>
+        <div class="panel" style="border-left:3px solid var(--amber);">
+          <div class="panel-title" style="color:var(--amber);">Problema 2 · Formatos duplicados</div>
+          <p style="font-size:.76rem;">Algunas PDPs aparecen con dos formatos de URL distintos en el mismo sitemap: con y sin el SKU en el slug. Google puede indexar ambas versiones como p&aacute;ginas diferentes.</p>
+        </div>
+        <div class="panel" style="border-left:3px solid var(--cyan);">
+          <div class="panel-title" style="color:var(--cyan);">Contexto · C&oacute;mo leerlo</div>
+          <p style="font-size:.76rem;">El sitemap es el &ldquo;mapa del tesoro&rdquo; que le env&iacute;as a Google para decirle qu&eacute; p&aacute;ginas debe indexar. Si el mapa tiene errores, Google puede saltearse contenido importante.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<!-- SLIDE 16: ANOMALÍAS CRÍTICAS -->
+<section class="slide light-theme">
+  <div class="slide-inner">
+    <div class="eyebrow reveal"><span class="badge badge-chapter">Cap. 04 &middot; Arquitectura</span><span class="badge badge-danger">Anomal&iacute;as detectadas</span><span>Semrush · Verificaci&oacute;n manual</span></div>
+    <h2 class="section-title reveal">3 anomal&iacute;as que afectan c&oacute;mo Google entiende el sitio</h2>
+    <div class="grid-3 reveal" style="margin-top:10px;">
+      <div class="panel" style="border-top:3px solid var(--danger);">
+        <div class="panel-title" style="color:var(--danger);">Anomal&iacute;a 1 · &ldquo;addi&rdquo; fintech</div>
+        <div style="margin:8px 0; padding:6px 10px; background:rgba(239,68,68,.06); border-radius:7px;">
+          <div style="font-size:.7rem; opacity:.6; margin-bottom:2px;">URL destino en Semrush</div>
+          <code style="font-family:var(--font-mono); font-size:.7rem; word-break:break-all;">/addi-hot-days-maravela</code>
+        </div>
+        <p style="font-size:.77rem;">La keyword &ldquo;addi&rdquo; (Addi es una fintech colombiana de BNPL con <strong>301.000 b&uacute;squedas/mes</strong>) lleva a una landing promo. Ese tr&aacute;fico no es de moda &mdash; no convierte. Adem&aacute;s, infla artificialmente las m&eacute;tricas del sitio.</p>
+      </div>
+      <div class="panel" style="border-top:3px solid var(--danger);">
+        <div class="panel-title" style="color:var(--danger);">Anomal&iacute;a 2 · SAP p&uacute;blico</div>
+        <div style="margin:8px 0; padding:6px 10px; background:rgba(239,68,68,.06); border-radius:7px;">
+          <div style="font-size:.7rem; opacity:.6; margin-bottom:2px;">URL indexada</div>
+          <code style="font-family:var(--font-mono); font-size:.68rem; word-break:break-all;">wia.arturocalle.com/AC_AccesoSAP/...</code>
+        </div>
+        <p style="font-size:.77rem;">El sistema interno SAP Fiori est&aacute; indexado p&uacute;blicamente. Cuando alguien busca &ldquo;arturo calle trabaja con nosotros&rdquo;, Google lo env&iacute;a a este sistema de login interno. Riesgo de seguridad + mala experiencia.</p>
+      </div>
+      <div class="panel" style="border-top:3px solid var(--amber);">
+        <div class="panel-title" style="color:var(--amber);">Anomal&iacute;a 3 · P&aacute;gina 15 de paginaci&oacute;n</div>
+        <div style="margin:8px 0; padding:6px 10px; background:rgba(245,158,11,.06); border-radius:7px;">
+          <div style="font-size:.7rem; opacity:.6; margin-bottom:2px;">URL detectada</div>
+          <code style="font-family:var(--font-mono); font-size:.7rem;">/hombre/ropa?page=15</code>
+        </div>
+        <p style="font-size:.77rem;">La keyword &ldquo;ropa arturo calle&rdquo; lleva a la p&aacute;gina 15 de resultados. Indica un link interno defectuoso o un problema de rastreo. El usuario que busca &ldquo;ropa arturo calle&rdquo; llega a la mitad del cat&aacute;logo sin contexto.</p>
+      </div>
+    </div>
+    <div class="reveal" style="margin-top:12px; padding:10px 16px; background:rgba(15,110,92,.06); border:1px solid rgba(15,110,92,.25); border-radius:10px;">
+      <p style="font-size:.78rem;"><strong style="color:var(--principal-dark);">Patr&oacute;n com&uacute;n:</strong> Las 3 anomal&iacute;as tienen el mismo origen &mdash; p&aacute;ginas que no fueron dise&ntilde;adas para SEO pero que Google decidi&oacute; indexar porque encontr&oacute; links hacia ellas. La soluci&oacute;n es agregar noindex a las p&aacute;ginas incorrectas y asegurarse de que los links internos apunten a las URLs correctas.</p>
+    </div>
+  </div>
+</section>
+
+
+<!-- SLIDE 17: COVER CAP. 5 -->
+<section class="slide dark-theme">
+  <div class="slide-inner" style="text-align:center; display:flex; flex-direction:column; align-items:center; justify-content:center; min-height:80vh;">
+    <div class="eyebrow reveal" style="justify-content:center;"><span class="badge badge-chapter" style="font-size:.82rem; padding:7px 18px;">Cap&iacute;tulo 5 de 9</span></div>
+    <h1 class="reveal" style="font-size:clamp(2.3rem,5vw,3.8rem); margin:16px auto 14px; max-width:20ch;">Rendimiento T&eacute;cnico</h1>
+    <p class="reveal" style="font-size:1.02rem; max-width:56ch; margin:0 auto; color:rgba(245,247,251,.8);">Auditor&iacute;a de im&aacute;genes, c&oacute;digos HTTP, redirecciones y velocidad de carga.</p>
+  </div>
+</section>
+
+
+<!-- SLIDE 18: TÉCNICO -->
+<section class="slide light-theme">
+  <div class="slide-inner">
+    <div class="eyebrow reveal"><span class="badge badge-chapter">Cap. 05 &middot; Rendimiento</span><span class="badge badge-amber">Auditor&iacute;a de crawl</span><span>Screaming Frog Spider</span></div>
+    <h2 class="section-title reveal">An&aacute;lisis t&eacute;cnico de las URLs rastreadas</h2>
+    <div class="grid-2 reveal" style="margin-top:10px;">
+      <div class="panel" style="border-left:3px solid var(--principal);">
+        <div class="panel-title">Inventario HTTP — Hallazgos clave</div>
+        <div style="display:flex; flex-direction:column; gap:8px; margin-top:8px;">
+          <div class="check-item">
+            <svg viewBox="0 0 16 16" style="width:14px;height:14px;fill:none;flex:none;margin-top:2px;">
+              <circle cx="8" cy="8" r="7" fill="rgba(16,185,129,.15)"/>
+              <path d="M4.5 8.5l2.5 2.5 4.5-5" stroke="#10b981" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+            <span>El sitio principal responde correctamente en <strong>HTTPS</strong> con redireccionamiento desde HTTP.</span>
+          </div>
+          <div class="check-item">
+            <svg viewBox="0 0 16 16" style="width:14px;height:14px;fill:none;flex:none;margin-top:2px;">
+              <circle cx="8" cy="8" r="7" fill="rgba(245,158,11,.15)"/>
+              <path d="M5 5l6 6M11 5l-6 6" stroke="#f59e0b" stroke-width="1.5" stroke-linecap="round"/>
+            </svg>
+            <span>Redirecciones 301 detectadas en URLs de PDPs entre el formato con SKU y sin SKU &mdash; doble crawl innecesario.</span>
+          </div>
+          <div class="check-item">
+            <svg viewBox="0 0 16 16" style="width:14px;height:14px;fill:none;flex:none;margin-top:2px;">
+              <circle cx="8" cy="8" r="7" fill="rgba(245,158,11,.15)"/>
+              <path d="M5 5l6 6M11 5l-6 6" stroke="#f59e0b" stroke-width="1.5" stroke-linecap="round"/>
+            </svg>
+            <span>P&aacute;ginas de paginaci&oacute;n (<code style="font-family:var(--font-mono);">?page=N</code>) indexadas &mdash; deber&iacute;an tener noindex o canonical a la primera p&aacute;gina.</span>
+          </div>
+          <div class="check-item">
+            <svg viewBox="0 0 16 16" style="width:14px;height:14px;fill:none;flex:none;margin-top:2px;">
+              <circle cx="8" cy="8" r="7" fill="rgba(239,68,68,.15)"/>
+              <path d="M5 5l6 6M11 5l-6 6" stroke="#ef4444" stroke-width="1.5" stroke-linecap="round"/>
+            </svg>
+            <span>URLs con par&aacute;metros (<code style="font-family:var(--font-mono);">?map=</code>, <code style="font-family:var(--font-mono);">?facets=</code>) sin bloquear en robots.txt &mdash; riesgo de contenido duplicado masivo.</span>
+          </div>
+        </div>
+      </div>
+      <div class="panel" style="border-left:3px solid var(--principal);">
+        <div class="panel-title">Im&aacute;genes y velocidad</div>
+        <div style="display:flex; flex-direction:column; gap:8px; margin-top:8px;">
+          <div class="check-item">
+            <svg viewBox="0 0 16 16" style="width:14px;height:14px;fill:none;flex:none;margin-top:2px;">
+              <circle cx="8" cy="8" r="7" fill="rgba(16,185,129,.15)"/>
+              <path d="M4.5 8.5l2.5 2.5 4.5-5" stroke="#10b981" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+            <span>Im&aacute;genes servidas desde CDN propio (<code style="font-family:var(--font-mono);">arturocalle.vteximg.com.br</code>).</span>
+          </div>
+          <div class="check-item">
+            <svg viewBox="0 0 16 16" style="width:14px;height:14px;fill:none;flex:none;margin-top:2px;">
+              <circle cx="8" cy="8" r="7" fill="rgba(245,158,11,.15)"/>
+              <path d="M5 5l6 6M11 5l-6 6" stroke="#f59e0b" stroke-width="1.5" stroke-linecap="round"/>
+            </svg>
+            <span>Formato de im&aacute;genes VTEX por defecto. Verificar que se sirvan en WebP y con dimensiones optimizadas para m&oacute;vil.</span>
+          </div>
+          <div class="check-item">
+            <svg viewBox="0 0 16 16" style="width:14px;height:14px;fill:none;flex:none;margin-top:2px;">
+              <circle cx="8" cy="8" r="7" fill="rgba(245,158,11,.15)"/>
+              <path d="M5 5l6 6M11 5l-6 6" stroke="#f59e0b" stroke-width="1.5" stroke-linecap="round"/>
+            </svg>
+            <span>El LCP (imagen que tarda m&aacute;s en cargar en m&oacute;vil) de las categor&iacute;as debe ser &lt; 2.5 seg para no perder posiciones en Google.</span>
+          </div>
+          <div class="check-item">
+            <svg viewBox="0 0 16 16" style="width:14px;height:14px;fill:none;flex:none;margin-top:2px;">
+              <circle cx="8" cy="8" r="7" fill="rgba(239,68,68,.15)"/>
+              <path d="M5 5l6 6M11 5l-6 6" stroke="#ef4444" stroke-width="1.5" stroke-linecap="round"/>
+            </svg>
+            <span>Im&aacute;genes de producto sin atributo <code style="font-family:var(--font-mono);">alt</code> descriptivo &mdash; Google no puede &ldquo;leer&rdquo; las fotos del cat&aacute;logo.</span>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="reveal" style="margin-top:10px; padding:10px 16px; background:rgba(6,182,212,.06); border:1px solid rgba(6,182,212,.2); border-radius:10px;">
+      <p style="font-size:.78rem;"><strong style="color:var(--cyan);">Nota sobre Core Web Vitals:</strong> VTEX como plataforma gestiona el rendering. Las optimizaciones de velocidad m&aacute;s impactantes se hacen desde el panel de VTEX IO (lazy loading, image API, bundle splitting) y no requieren desarrollo a medida.</p>
+    </div>
+  </div>
+</section>
+
+</div><!-- end .deck partial — continues in next section -->
+
+<!-- Footer temporal para navegar durante escritura -->
+<div class="footer-bar">
+  <div class="brand-mark"><strong>Arturo Calle</strong> &middot; Diagn&oacute;stico SEO 2026 &middot; Grovi Studio</div>
+  <div class="dots-container" id="dots"></div>
+  <div class="nav-controls">
+    <span id="counter" style="font-size:.72rem; color:rgba(255,255,255,.6); min-width:40px; text-align:center;"></span>
+    <button class="nav-btn" id="prevBtn"><svg class="icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 18l-6-6 6-6"/></svg><span>Ant.</span></button>
+    <button class="nav-btn" id="nextBtn"><span>Sig.</span><svg class="icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 18l6-6-6-6"/></svg></button>
+  </div>
+</div>
+
+<script>
+(function(){
+  var slides = Array.prototype.slice.call(document.querySelectorAll('.slide'));
+  var dotsWrap = document.getElementById('dots');
+  var counter = document.getElementById('counter');
+  var progressLine = document.getElementById('progressLine');
+  var idx = 0;
+
+  slides.forEach(function(_, i){
+    var b = document.createElement('button');
+    b.className = 'dot-btn' + (i === 0 ? ' active' : '');
+    b.title = 'Ir a diapositiva ' + (i + 1);
+    b.addEventListener('click', function(){ goTo(i); });
+    dotsWrap.appendChild(b);
+  });
+  var dotEls = Array.prototype.slice.call(dotsWrap.children);
+
+  function goTo(i){
+    i = Math.max(0, Math.min(slides.length - 1, i));
+    slides.forEach(function(s, si){
+      s.classList.remove('active','prevslide');
+      if (si === i) s.classList.add('active');
+      else if (si < i) s.classList.add('prevslide');
+    });
+    idx = i;
+    dotEls.forEach(function(d, di){ d.classList.toggle('active', di === idx); });
+    counter.textContent = (idx+1) + ' / ' + slides.length;
+    progressLine.style.width = (((idx+1)/slides.length) * 100) + '%';
+    if (i === 9) drawTrafficChart();
+    if (i === 11) drawPdpChart();
+  }
+
+  document.getElementById('prevBtn').addEventListener('click', function(){ goTo(idx-1); });
+  document.getElementById('nextBtn').addEventListener('click', function(){ goTo(idx+1); });
+  window.addEventListener('keydown', function(e){
+    if (e.key === 'ArrowRight' || e.key === ' ' || e.key === 'PageDown') { goTo(idx+1); e.preventDefault(); }
+    else if (e.key === 'ArrowLeft' || e.key === 'PageUp') { goTo(idx-1); e.preventDefault(); }
+    else if (e.key === 'f' || e.key === 'F') {
+      if (!document.fullscreenElement) document.documentElement.requestFullscreen().catch(function(){});
+      else document.exitFullscreen().catch(function(){});
+    }
+  });
+  var touchX = null;
+  document.addEventListener('touchstart', function(e){ touchX = e.touches[0].clientX; });
+  document.addEventListener('touchend', function(e){
+    if (touchX === null) return;
+    var dx = e.changedTouches[0].clientX - touchX;
+    if (Math.abs(dx) > 50) { dx < 0 ? goTo(idx+1) : goTo(idx-1); }
+    touchX = null;
+  });
+
+  /* ---- Traffic Chart (Semrush, Nov 2024 – Oct 2026) ---- */
+  var trafficData = [
+    {m:'Nov 24',v:369438},{m:'Dic 24',v:363772},{m:'Ene 25',v:354555},
+    {m:'Feb 25',v:340862},{m:'Mar 25',v:326926},{m:'Abr 25',v:315444},
+    {m:'May 25',v:336526},{m:'Jun 25',v:347956},{m:'Jul 25',v:349956},
+    {m:'Ago 25',v:418841},{m:'Sep 25',v:419052},{m:'Oct 25',v:396310},
+    {m:'Nov 25',v:373383},{m:'Dic 25',v:367849},{m:'Ene 26',v:356845},
+    {m:'Feb 26',v:330839},{m:'Mar 26',v:323446},{m:'Abr 26',v:326463},
+    {m:'May 26',v:323286},{m:'Jun 26',v:329619},{m:'Jul 26',v:336045},
+    {m:'Ago 26',v:321538},{m:'Sep 26',v:203780},{m:'Oct 26',v:245407}
+  ];
+  var chartDrawn = false;
+
+  function drawTrafficChart(){
+    if (chartDrawn) return;
+    chartDrawn = true;
+    var svg = document.getElementById('trafficChart');
+    if (!svg) return;
+    var W=820, H=220, padL=52, padR=20, padT=16, padB=42;
+    var plotW = W-padL-padR, plotH = H-padT-padB;
+    var vals = trafficData.map(function(d){return d.v;});
+    var minV=0, maxV=480000;
+    var n = vals.length;
+    function px(i){return padL + i/(n-1)*plotW;}
+    function py(v){return padT + (1-v/maxV)*plotH;}
+
+    function el(tag, attrs){
+      var e = document.createElementNS('http://www.w3.org/2000/svg',tag);
+      Object.keys(attrs).forEach(function(k){e.setAttribute(k,attrs[k]);});
+      return e;
+    }
+
+    /* grid */
+    [0,100000,200000,300000,400000].forEach(function(v){
+      var y=py(v);
+      svg.appendChild(el('line',{x1:padL,y1:y,x2:padL+plotW,y2:y,stroke:'rgba(255,255,255,.08)',
+        'stroke-width':'1','stroke-dasharray':v===0?'none':'4,4'}));
+      var t = el('text',{x:padL-5,y:y+4,'text-anchor':'end','font-size':'9','fill':'rgba(255,255,255,.4)','font-family':'Montserrat,sans-serif'});
+      t.textContent = (v/1000)+'k';
+      svg.appendChild(t);
+    });
+
+    /* area */
+    var areaD = 'M'+px(0)+','+py(0);
+    vals.forEach(function(v,i){if(i>0) areaD+=' L'+px(i)+','+py(v);});
+    areaD += ' L'+px(n-1)+','+(padT+plotH)+' L'+padL+','+(padT+plotH)+' Z';
+    var defs = el('defs',{});
+    var grad = el('linearGradient',{id:'trafficGrad',x1:'0',y1:'0',x2:'0',y2:'1'});
+    var s1 = el('stop',{offset:'0%','stop-color':'#0f6e5c','stop-opacity':'0.5'});
+    var s2 = el('stop',{offset:'100%','stop-color':'#0f6e5c','stop-opacity':'0.04'});
+    grad.appendChild(s1); grad.appendChild(s2); defs.appendChild(grad); svg.appendChild(defs);
+    svg.appendChild(el('path',{d:areaD,fill:'url(#trafficGrad)'}));
+
+    /* line */
+    var lineD = '';
+    vals.forEach(function(v,i){lineD += (i===0?'M':'L')+px(i)+','+py(v);});
+    svg.appendChild(el('path',{d:lineD,fill:'none',stroke:'#2dd4bf','stroke-width':'2.5',
+      'stroke-linejoin':'round','stroke-linecap':'round'}));
+
+    /* peak marker */
+    var peakI = 10; /* Sep 2025 */
+    svg.appendChild(el('circle',{cx:px(peakI),cy:py(vals[peakI]),r:'5',fill:'#2dd4bf','stroke':'#fff','stroke-width':'2'}));
+    var pt1 = el('text',{x:px(peakI),y:py(vals[peakI])-10,'text-anchor':'middle','font-size':'9.5','fill':'#2dd4bf','font-family':'Montserrat,sans-serif','font-weight':'900'});
+    pt1.textContent = '419k PICO';
+    svg.appendChild(pt1);
+
+    /* drop marker */
+    var dropI = 22; /* Sep 2026 */
+    svg.appendChild(el('line',{x1:px(dropI),y1:padT,x2:px(dropI),y2:padT+plotH,stroke:'rgba(239,68,68,.5)','stroke-width':'1.5','stroke-dasharray':'4,3'}));
+    svg.appendChild(el('circle',{cx:px(dropI),cy:py(vals[dropI]),r:'5',fill:'#ef4444','stroke':'#fff','stroke-width':'2'}));
+    var pt2 = el('text',{x:px(dropI),y:py(vals[dropI])-10,'text-anchor':'middle','font-size':'9.5','fill':'#ef4444','font-family':'Montserrat,sans-serif','font-weight':'900'});
+    pt2.textContent = '203k CAÍDA';
+    svg.appendChild(pt2);
+
+    /* x axis labels — every 3 */
+    trafficData.forEach(function(d,i){
+      if(i % 3 === 0){
+        var t = el('text',{x:px(i),y:H-6,'text-anchor':'middle','font-size':'8.5','fill':'rgba(255,255,255,.45)','font-family':'Poppins,sans-serif'});
+        t.textContent = d.m;
+        svg.appendChild(t);
+      }
+    });
+  }
+
+  /* ---- PDP Donut Chart ---- */
+  var pdpDrawn = false;
+  function drawPdpChart(){
+    if (pdpDrawn) return;
+    pdpDrawn = true;
+    var svg = document.getElementById('pdpChart');
+    if (!svg) return;
+    var cx=200,cy=100,r=75,ir=42;
+    var slices = [{v:1182,c:'#ef4444'},{v:548,c:'#f59e0b'},{v:17,c:'#10b981'}];
+    var total = 1747;
+    var start = -Math.PI/2;
+
+    function el(tag,attrs){
+      var e=document.createElementNS('http://www.w3.org/2000/svg',tag);
+      Object.keys(attrs).forEach(function(k){e.setAttribute(k,attrs[k]);});
+      return e;
+    }
+
+    slices.forEach(function(s){
+      var angle = (s.v/total)*Math.PI*2;
+      var end = start+angle;
+      var x1=cx+r*Math.cos(start),y1=cy+r*Math.sin(start);
+      var x2=cx+r*Math.cos(end),y2=cy+r*Math.sin(end);
+      var ix1=cx+ir*Math.cos(start),iy1=cy+ir*Math.sin(start);
+      var ix2=cx+ir*Math.cos(end),iy2=cy+ir*Math.sin(end);
+      var large=angle>Math.PI?1:0;
+      var d='M'+ix1+','+iy1+' L'+x1+','+y1+' A'+r+','+r+' 0 '+large+',1 '+x2+','+y2+' L'+ix2+','+iy2+' A'+ir+','+ir+' 0 '+large+',0 '+ix1+','+iy1+' Z';
+      svg.appendChild(el('path',{d:d,fill:s.c,'opacity':'0.9'}));
+      start=end;
+    });
+
+    var center = el('text',{x:cx,y:cy-6,'text-anchor':'middle','font-size':'22','fill':'#fff','font-family':'Montserrat,sans-serif','font-weight':'900'});
+    center.textContent='67.6%';
+    svg.appendChild(center);
+    var sub = el('text',{x:cx,y:cy+14,'text-anchor':'middle','font-size':'9','fill':'rgba(255,255,255,.6)','font-family':'Poppins,sans-serif'});
+    sub.textContent='sin clics';
+    svg.appendChild(sub);
+  }
+
+  goTo(0);
+})();
+</script>
+</body>
+</html>
